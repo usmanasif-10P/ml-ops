@@ -10,9 +10,6 @@ jobs:
     mlops:
         name: Train and save the model
         runs-on: windows-latest
-        strategy:
-            matrix:
-                python: [3.11, 3.12]
 
         steps:
           - name: Checkout
