@@ -27,11 +27,11 @@ jobs:
                 python-version-file: ".python-version"
 
           - name: Install deps
-            run: uv sync --frozen
+            run: uv sync --frozen --no-dev
 
           - name: Train model
             run: |
-                uv run python flower_prediction.py
+                .venv\Scripts\python.exe flower_prediction.py
                 ls -Force artifacts
 
           - name: Upload artifacts
