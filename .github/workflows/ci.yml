@@ -1,0 +1,44 @@
+name: ML OPS CI
+
+on: 
+    push: 
+        branches: [main]
+    pull_request: 
+        branches: [main]
+
+jobs:
+    mlops:
+        name: Train and save the model
+        runs-on: windows-latest
+        strategy:
+            matrix:
+                python: [3.11, 3.12]
+
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Setup uv
+            uses: astral-sh/setup-uv@v5
+            with:
+                enable-cache: true
+                cache-dependency-glob: "uv.lock"
+
+          - name: Setup python
+            uses: actions/setup-python@v5
+            with:
+                python-version-file: ".python-version"
+
+          - name: Install deps
+            run: uv sync --frozen
+
+          - name: Train model
+            run: |
+                uv run python flower_prediction.py
+                ls -Force artifacts
+
+          - name: Upload artifacts
+            uses: actions/upload-artifact@v4
+            with:
+                name: ml-artifacts-${{github.run_id}}
+                path: artifacts
