@@ -2,7 +2,6 @@
 # Scikit-Learn / Machine Learning Specifics
 # ============================================================================
 # Do not track trained models (serialized files)
-/artifacts
 *.joblib
 *.pkl
 *.pickle

@@ -1,0 +1,4 @@
+[core]
+    remote = onedrive
+['remote "onedrive"']
+    url = C:\Users\Usman Asif\OneDrive - 10Pearls\DVC\ml-ops
