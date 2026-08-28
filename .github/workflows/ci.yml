@@ -31,7 +31,7 @@ jobs:
 
           - name: Train model
             run: |
-                .venv\Scripts\python.exe flower_prediction.py
+                .venv\Scripts\python.exe models/flower_prediction.py
                 ls -Force artifacts
 
           - name: Upload artifacts
