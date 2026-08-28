@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 
-class GetPrediction(BaseModel):
+class GetPredictionRequest(BaseModel):
     features: list[int]

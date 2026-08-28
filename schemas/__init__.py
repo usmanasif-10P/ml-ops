@@ -1,3 +1,4 @@
-from .prediction import GetPrediction
+from .prediction import GetPredictionRequest
+from .analyze_tone import AnalyzeToneRequest
 
-__all__ = ["GetPrediction"]
+__all__ = ["GetPredictionRequest", "AnalyzeToneRequest"]

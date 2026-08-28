@@ -1,0 +1,25 @@
+backendStore:
+  databaseMigration: true  # Enable for schema updates
+  databaseConnectionCheck: false  # Enable for health checks
+  postgres: 
+    enabled: true
+    port: 5432
+    host: postgres-postgresql.mlflow.svc.cluster.local
+    database: mlflow
+    user: postgres
+    password: mlflow123
+
+artifactRoot:
+  defaultArtifactRoot: ./mlruns
+  defaultArtifactsDestination: ./mlartifacts
+  proxiedArtifactStorage: false
+
+service:
+  type: ClusterIP
+  port: 5000
+
+serverAllowedHosts:
+  - '*'
+
+ingress:
+  enabled: false

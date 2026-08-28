@@ -1,0 +1,5 @@
+outs:
+- md5: 786930c8d3c626f53cd013e3cad66d78
+  size: 79589
+  hash: md5
+  path: tone_analyze_model.pkl
