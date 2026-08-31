@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/usmanasif-10P/ml-ops
     targetRevision: main
-    path: k8s/ml-app
+    path: k8s/mlapp
 
   destination:
     server: https://kubernetes.default.svc
