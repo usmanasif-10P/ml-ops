@@ -1,0 +1,133 @@
+# PIPELINE DEFINITION
+# Name: iris-pipeline
+components:
+  comp-load-data:
+    executorLabel: exec-load-data
+    outputDefinitions:
+      artifacts:
+        X_out:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        y_out:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-train-model:
+    executorLabel: exec-train-model
+    inputDefinitions:
+      artifacts:
+        X_in:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        y_in:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+deploymentSpec:
+  executors:
+    exec-load-data:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - load_data
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'scikit-learn>=1.9.0'\
+          \ 'pandas'  &&  python3 -m pip install --quiet --no-warn-script-location\
+          \ 'kfp==2.17.0' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"\
+          3.9\"' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef load_data(\n    X_out: Output[Dataset],\n    y_out: Output[Dataset]\n\
+          ):\n    import pandas as pd\n    from sklearn.datasets import load_iris\n\
+          \n    X, y = load_iris(return_X_y=True)\n\n    # Save the arrays as CSV\
+          \ files to the designated KFP artifact paths\n    pd.DataFrame(X).to_csv(X_out.path,\
+          \ index=False)\n    pd.DataFrame(y).to_csv(y_out.path, index=False)\n\n"
+        image: python:3.12-slim
+    exec-train-model:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_model
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'scikit-learn>=1.9.0'\
+          \ 'pandas'  &&  python3 -m pip install --quiet --no-warn-script-location\
+          \ 'kfp==2.17.0' '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"\
+          3.9\"' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_model(\n    X_in: Input[Dataset], \n    y_in: Input[Dataset]\n\
+          ):\n    import pandas as pd\n    from sklearn.model_selection import train_test_split\n\
+          \    from sklearn.linear_model import LogisticRegression\n    from sklearn.metrics\
+          \ import accuracy_score\n\n    # Load the datasets back into memory\n  \
+          \  X = pd.read_csv(X_in.path).values\n    y = pd.read_csv(y_in.path).values.ravel()\
+          \ # Flatten to 1D array\n\n    X_train, X_test, y_train, y_test = train_test_split(\n\
+          \        X, y, test_size=0.2\n    )\n    model = LogisticRegression(max_iter=200)\n\
+          \    model.fit(X_train, y_train)\n    predictions = model.predict(X_test)\n\
+          \    score = accuracy_score(y_test, predictions)\n    print(f\"Model Accuracy:\
+          \ {score}\")\n\n"
+        image: python:3.12-slim
+pipelineInfo:
+  name: iris-pipeline
+root:
+  dag:
+    tasks:
+      load-data:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-load-data
+        taskInfo:
+          name: load-data
+      train-model:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-model
+        dependentTasks:
+        - load-data
+        inputs:
+          artifacts:
+            X_in:
+              taskOutputArtifact:
+                outputArtifactKey: X_out
+                producerTask: load-data
+            y_in:
+              taskOutputArtifact:
+                outputArtifactKey: y_out
+                producerTask: load-data
+        taskInfo:
+          name: train-model
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.17.0

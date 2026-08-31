@@ -2,9 +2,11 @@ apiVersion: serving.kserve.io/v1beta1
 kind: InferenceService
 metadata:
   name: intent-classifier
+  namespace: argo-ml-app
 spec:
   predictor:
     model:
+      args: ["--enable_docs_url=True"]
       modelFormat:
         name: sklearn
       storageUri: "https://github.com/usmanasif-10P/ml-ops/releases/download/v1/tone_analyze_model.pkl"
