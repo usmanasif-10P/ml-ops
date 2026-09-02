@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, mean_squared_error, r2_score
 import mlflow
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:50003")
+tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")
 
 mlflow.set_tracking_uri(tracking_uri)
 mlflow.set_experiment("Flower Prediction")
@@ -20,12 +20,8 @@ params = {
     "test_size": 0.2,
     "random_state": 42,
     "max_iter": 200,
-    "dump": True
+    "dump": False
 }
-
-def log_params(params: dict):
-    for key, value in params.items():
-        mlflow.log_param(key, value)
 
 
 with mlflow.start_run(run_name=params["run_id"]) as run:
@@ -34,7 +30,7 @@ with mlflow.start_run(run_name=params["run_id"]) as run:
         X, y, test_size=params["test_size"], random_state=params["random_state"]
     )
 
-    log_params(params)
+    mlflow.autolog(log_input_examples=True)
 
     model = LogisticRegression(max_iter=params["max_iter"])
     model.fit(X_train, y_train)
@@ -47,6 +43,8 @@ with mlflow.start_run(run_name=params["run_id"]) as run:
         joblib.dump(model, model_path)
 
     predictions = model.predict(X_test)
+
+    mlflow.sklearn.log_model(model, "artifacts", registered_model_name="FlowerPredictionModel")
 
     score = accuracy_score(y_test, predictions)
     mse = mean_squared_error(y_test, predictions)

@@ -1,0 +1,12 @@
+name: "ML Ops Project"
+
+entry_points:
+  tone_analyzer:
+    command: "python models/tone_analyzer.py --test_size {test_size} --random_state {random_state}"
+    parameters:
+      test_size:
+        type: float 
+        default: 0.2
+      random_state: 
+        type: int 
+        default: 42

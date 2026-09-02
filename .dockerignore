@@ -89,5 +89,8 @@ venv/
 
 # Models
 # artifacts/
-*.pkl
-*.joblib
+# *.pkl
+# *.joblib
+
+# DVC files
+*.dvc

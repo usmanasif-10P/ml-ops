@@ -31,3 +31,10 @@ ENV/
 .idea/
 .DS_Store
 Thumbs.db
+
+# ML Flow
+*mlruns/
+
+# Databases
+*.sql
+*.db

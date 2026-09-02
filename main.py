@@ -2,9 +2,7 @@ import joblib
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from schemas import GetPredictionRequest, AnalyzeToneRequest
-
-from models.tone_analyzer import MAPPING
+from schemas import GetPredictionRequest, AnalyzeToneRequest, TONE_MAPPING
 
 app = FastAPI()
 
@@ -14,13 +12,13 @@ def health_check():
 
 @app.post("/predict")
 def predict(data: GetPredictionRequest):
-    model = joblib.load('artifacts/model.pkl')
+    model = joblib.load('artifacts/models/model.pkl')
     predictions = model.predict([data.features])
     return JSONResponse({"prediction": predictions.tolist()})
 
 @app.post("/analyze_tone")
 def predict(data: AnalyzeToneRequest):
-    model = joblib.load('artifacts/tone_analyze_model.pkl')
+    model = joblib.load('artifacts/models/tone_analyze_model.pkl')
     predictions = model.predict([data.message])
-    tone = MAPPING[predictions.tolist()[0]]
+    tone = TONE_MAPPING[predictions.tolist()[0]]
     return JSONResponse({"tone": tone})
