@@ -15,5 +15,11 @@ jobs:
     # Registered from .az/compute.yml - an AmlCompute cluster,
     # min_instances: 0, so it costs nothing when no job is running.
     compute: azureml:cpu-cluster
+    # Formally declared output - Azure ML mounts a real, persisted path
+    # here and injects it via ${{outputs.model_output}} below, so the
+    # model survives after the compute node scales back to zero.
+    outputs:
+      model_output:
+        mode: rw_mount
     command: >-
-      python models/test.py
+      python models/test.py --output-dir ${{outputs.model_output}}
