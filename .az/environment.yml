@@ -1,0 +1,6 @@
+$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
+name: ml-ops-training-env
+description: Training environment for ml-ops - Python 3.14, deps installed via uv from pyproject.toml/uv.lock (no-dev group only, matching ci.yml's `uv sync --frozen --no-dev`)
+build:
+  path: ..                    # repo root, relative to this file's own location (.az/)
+  dockerfile_path: Dockerfile.train
