@@ -1,0 +1,7 @@
+$schema: https://azuremlschemas.azureedge.net/latest/amlCompute.schema.json
+name: cpu-cluster
+type: amlcompute
+size: Standard_DS2_v2
+min_instances: 0          # scale-to-zero when idle - no job running, no cost
+max_instances: 1          # bounded on purpose - this is a learning project, not a fleet
+idle_time_before_scale_down: 300   # 5 min idle before the node terminates
