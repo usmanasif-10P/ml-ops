@@ -1,0 +1,22 @@
+trigger:
+- main
+
+stages:
+- stage: deployDev
+  displayName: 'Deploy to development environment'
+  jobs:
+    - deployment: publishPipeline
+      displayName: 'Model Training'
+      pool:
+        vmImage: 'ubuntu-latest'
+      environment: dev
+      strategy:
+       runOnce:
+         deploy:
+          steps:
+          - template: aml-steps.yml
+            parameters:
+              # The service connection you already created and verified -
+              # holds Azure-Devops-UsmanAsif's client ID/secret/tenant ID,
+              # already granted Contributor on ML-OPS-POC-UsmanAsif.
+              serviceconnectionname: 'MlOps'
