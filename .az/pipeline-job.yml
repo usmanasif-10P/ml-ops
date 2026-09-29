@@ -4,7 +4,7 @@ display_name: ml-ops-training-pipeline
 experiment_name: ml-ops-training-pipeline
 jobs:
 
-  train-job:
+  train_job:
     type: command
     code: .
     # Registered from .az/environment.yml (Dockerfile.train + uv sync,
