@@ -1,0 +1,19 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+display_name: ml-ops-training-pipeline
+experiment_name: ml-ops-training-pipeline
+jobs:
+
+  train-job:
+    type: command
+    code: .
+    # Registered from .az/environment.yml (Dockerfile.train + uv sync,
+    # matching pyproject.toml/uv.lock). Run once to create it:
+    #   az ml environment create --file .az/environment.yml \
+    #     --resource-group ML-OPS-POC-UsmanAsif --workspace-name MLOPS
+    environment: azureml:ml-ops-training-env@latest
+    # Registered from .az/compute.yml - an AmlCompute cluster,
+    # min_instances: 0, so it costs nothing when no job is running.
+    compute: azureml:cpu-cluster
+    command: >-
+      python models/test.py
