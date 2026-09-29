@@ -6,7 +6,7 @@ jobs:
 
   train_job:
     type: command
-    code: .
+    code: ..                # repo root, relative to this file's own location (.az/)
     # Registered from .az/environment.yml (Dockerfile.train + uv sync,
     # matching pyproject.toml/uv.lock). Run once to create it:
     #   az ml environment create --file .az/environment.yml \
