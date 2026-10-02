@@ -33,4 +33,4 @@ predictions = model.predict(X_test)
 
 score = accuracy_score(y_test, predictions)
 
-print(score)
+print(f"Accurary = {score}")
