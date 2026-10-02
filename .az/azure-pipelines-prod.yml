@@ -18,5 +18,5 @@ stages:
             parameters:
               # The service connection you already created and verified -
               # holds Azure-Devops-UsmanAsif's client ID/secret/tenant ID,
-              # already granted Contributor on ML-OPS-POC-UsmanAsif.
+              # already granted Contributor on ML-OPS-POC-UsmanAsif
               serviceconnectionname: 'MLOps Prod'
