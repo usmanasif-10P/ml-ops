@@ -2,15 +2,15 @@ name: ML OPS CI
 
 on: 
     push: 
-        branches: [main]
+        branches: [production]
     pull_request: 
-        branches: [main]
+        branches: [production]
 
 jobs:
     mlops:
         name: Train and save the model
         runs-on: windows-latest
-        environment: Dev
+        environment: Prod
 
         steps:
           - name: Checkout
