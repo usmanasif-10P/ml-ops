@@ -1,0 +1,17 @@
+type: mltable
+
+# Paths are relative to this MLTable file, so the folder is self-contained.
+paths:
+  - file: ./iris.csv
+
+transformations:
+  - read_delimited:
+      delimiter: ','
+      header: all_files_same_headers
+      encoding: utf8
+  # Explicit schema: don't leave AutoML to guess the column types.
+  - convert_column_types:
+      - columns: [sepal_length, sepal_width, petal_length, petal_width]
+        column_type: float
+      - columns: species
+        column_type: string
